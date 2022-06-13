@@ -275,21 +275,26 @@ public class URIBuilderImpl implements URIBuilder {
     for (Segment seg : segments) {
       if (segmentsBuilder.length() > 0 && seg.getType() != SegmentType.KEY) {
         switch (seg.getType()) {
-        case BOUND_OPERATION:
-          segmentsBuilder.append(getBoundOperationSeparator());
-          break;
-        case BOUND_ACTION:
-          segmentsBuilder.append(getBoundOperationSeparator());
-          break;
-        default:
-          if (segmentsBuilder.length() > 0 && segmentsBuilder.charAt(segmentsBuilder.length() - 1) != '/') {
-            segmentsBuilder.append('/');
-          }
+          case BOUND_OPERATION:
+            segmentsBuilder.append(getBoundOperationSeparator());
+            break;
+          case BOUND_ACTION:
+            segmentsBuilder.append(getBoundOperationSeparator());
+            break;
+          default:
+            if (segmentsBuilder.length() > 0 && segmentsBuilder.charAt(segmentsBuilder.length() - 1) != '/') {
+              segmentsBuilder.append('/');
+            }
         }
       }
 
       if (seg.getType() == SegmentType.ENTITY) {
         segmentsBuilder.append(seg.getType().getValue());
+      } else if (seg.getValue().startsWith("(") && seg.getValue().endsWith(")")) {
+        segmentsBuilder.append(seg.getValue()
+                .replace(" ", "%20")
+                .replace("[", "%5B")
+                .replace("]", "%5D"));
       } else {
         segmentsBuilder.append(seg.getValue());
       }
