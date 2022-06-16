@@ -44,6 +44,7 @@ import org.apache.olingo.client.api.communication.response.AsyncResponseWrapper;
 import org.apache.olingo.client.api.communication.response.ODataDeleteResponse;
 import org.apache.olingo.client.api.communication.response.ODataResponse;
 import org.apache.olingo.client.api.http.HttpClientException;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.http.HttpHeader;
 import org.apache.olingo.commons.api.http.HttpMethod;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
@@ -238,7 +239,7 @@ public class AsyncRequestWrapperImpl<R extends ODataResponse> extends AbstractRe
     }
 
     URI createLocation(String string) {
-      return checkLocation(URI.create(string));
+      return checkLocation(URI.create(URIUtils.cleanHref(string)));
     }
 
     int parseReplyAfter(String value) {

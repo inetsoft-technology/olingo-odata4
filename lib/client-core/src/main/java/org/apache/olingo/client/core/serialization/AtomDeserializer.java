@@ -39,6 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.data.ResWrap;
 import org.apache.olingo.client.api.serialization.ODataDeserializer;
 import org.apache.olingo.client.api.serialization.ODataDeserializerException;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.AbstractODataObject;
 import org.apache.olingo.commons.api.data.Annotation;
@@ -481,7 +482,7 @@ public class AtomDeserializer implements ODataDeserializer {
     final Delta delta = new Delta();
     final Attribute xmlBase = start.getAttributeByName(Constants.QNAME_ATTR_XML_BASE);
     if (xmlBase != null) {
-      delta.setBaseURI(URI.create(xmlBase.getValue()));
+      delta.setBaseURI(URI.create(URIUtils.cleanHref(xmlBase.getValue())));
     }
 
     boolean foundEndFeed = false;
@@ -504,13 +505,13 @@ public class AtomDeserializer implements ODataDeserializer {
             if (Constants.NEXT_LINK_REL.equals(rel.getValue())) {
               final Attribute href = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_HREF));
               if (href != null) {
-                delta.setNext(URI.create(href.getValue()));
+                delta.setNext(URI.create(URIUtils.cleanHref(href.getValue())));
               }
             }
             if (Constants.NS_DELTA_LINK_REL.equals(rel.getValue())) {
               final Attribute href = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_HREF));
               if (href != null) {
-                delta.setDeltaLink(URI.create(href.getValue()));
+                delta.setDeltaLink(URI.create(URIUtils.cleanHref(href.getValue())));
               }
             }
           }
@@ -521,7 +522,7 @@ public class AtomDeserializer implements ODataDeserializer {
 
           final Attribute ref = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_REF));
           if (ref != null) {
-            deletedEntity.setId(URI.create(ref.getValue()));
+            deletedEntity.setId(URI.create(URIUtils.cleanHref(ref.getValue())));
           }
           final Attribute reason = event.asStartElement().getAttributeByName(reasonQName);
           if (reason != null) {
@@ -536,7 +537,7 @@ public class AtomDeserializer implements ODataDeserializer {
 
           final Attribute source = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_SOURCE));
           if (source != null) {
-            link.setSource(URI.create(source.getValue()));
+            link.setSource(URI.create(URIUtils.cleanHref(source.getValue())));
           }
           final Attribute relationship =
               event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_RELATIONSHIP));
@@ -545,7 +546,7 @@ public class AtomDeserializer implements ODataDeserializer {
           }
           final Attribute target = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_TARGET));
           if (target != null) {
-            link.setTarget(URI.create(target.getValue()));
+            link.setTarget(URI.create(URIUtils.cleanHref(target.getValue())));
           }
 
           if (linkQName.equals(event.asStartElement().getName())) {
@@ -614,7 +615,7 @@ public class AtomDeserializer implements ODataDeserializer {
 
     final Attribute entityRefId = start.getAttributeByName(Constants.QNAME_ATOM_ATTR_ID);
     if (entityRefId != null) {
-      entity.setId(URI.create(entityRefId.getValue()));
+      entity.setId(URI.create(URIUtils.cleanHref(entityRefId.getValue())));
     }
 
     return entity;
@@ -629,7 +630,7 @@ public class AtomDeserializer implements ODataDeserializer {
       entity = new Entity();
       final Attribute xmlBase = start.getAttributeByName(Constants.QNAME_ATTR_XML_BASE);
       if (xmlBase != null) {
-        entity.setBaseURI(URI.create(xmlBase.getValue()));
+        entity.setBaseURI(URI.create(URIUtils.cleanHref(xmlBase.getValue())));
       }
 
       final Attribute etag = start.getAttributeByName(etagQName);
@@ -709,7 +710,7 @@ public class AtomDeserializer implements ODataDeserializer {
             }
             final Attribute target = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_TARGET));
             if (target != null) {
-              operation.setTarget(URI.create(target.getValue()));
+              operation.setTarget(URI.create(URIUtils.cleanHref(target.getValue())));
             }
 
             entity.getOperations().add(operation);
@@ -721,7 +722,7 @@ public class AtomDeserializer implements ODataDeserializer {
               entity.setMediaContentType(type.getValue());
               final Attribute src = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATOM_ATTR_SRC));
               if (src != null) {
-                entity.setMediaContentSource(URI.create(src.getValue()));
+                entity.setMediaContentSource(URI.create(URIUtils.cleanHref(src.getValue())));
               }
             }
           } else if (propertiesQName.equals(event.asStartElement().getName())) {
@@ -783,7 +784,7 @@ public class AtomDeserializer implements ODataDeserializer {
     final EntityCollection entitySet = new EntityCollection();
     final Attribute xmlBase = start.getAttributeByName(Constants.QNAME_ATTR_XML_BASE);
     if (xmlBase != null) {
-      entitySet.setBaseURI(URI.create(xmlBase.getValue()));
+      entitySet.setBaseURI(URI.create(URIUtils.cleanHref(xmlBase.getValue())));
     }
 
     boolean foundEndFeed = false;
@@ -806,13 +807,13 @@ public class AtomDeserializer implements ODataDeserializer {
             if (Constants.NEXT_LINK_REL.equals(rel.getValue())) {
               final Attribute href = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_HREF));
               if (href != null) {
-                entitySet.setNext(URI.create(href.getValue()));
+                entitySet.setNext(URI.create(URIUtils.cleanHref(href.getValue())));
               }
             }
             if (Constants.NS_DELTA_LINK_REL.equals(rel.getValue())) {
               final Attribute href = event.asStartElement().getAttributeByName(QName.valueOf(Constants.ATTR_HREF));
               if (href != null) {
-                entitySet.setDeltaLink(URI.create(href.getValue()));
+                entitySet.setDeltaLink(URI.create(URIUtils.cleanHref(href.getValue())));
               }
             }
           }
@@ -934,7 +935,7 @@ public class AtomDeserializer implements ODataDeserializer {
     final Attribute metadataETag = start.getAttributeByName(metadataEtagQName);
 
     return new ResWrap<>(
-        context == null ? null : URI.create(context.getValue()),
+        context == null ? null : URI.create(URIUtils.cleanHref(context.getValue())),
             metadataETag == null ? null : metadataETag.getValue(),
                 object);
   }

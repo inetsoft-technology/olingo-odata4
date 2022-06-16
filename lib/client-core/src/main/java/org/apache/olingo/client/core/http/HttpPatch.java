@@ -19,6 +19,7 @@
 package org.apache.olingo.client.core.http;
 
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.olingo.client.core.uri.URIUtils;
 
 import java.net.URI;
 
@@ -55,7 +56,7 @@ public class HttpPatch extends HttpEntityEnclosingRequestBase {
    */
   public HttpPatch(final String uri) {
     super();
-    setURI(URI.create(uri));
+    setURI(URI.create(URIUtils.cleanHref(uri)));
   }
 
   /**

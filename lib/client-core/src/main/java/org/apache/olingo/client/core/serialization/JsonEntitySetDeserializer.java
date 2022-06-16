@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.data.ResWrap;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.Annotation;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -60,16 +61,17 @@ public class JsonEntitySetDeserializer extends JsonDeserializer {
 
     URI contextURL;
     if (tree.hasNonNull(Constants.JSON_CONTEXT)) {
-      contextURL = URI.create(tree.get(Constants.JSON_CONTEXT).textValue());
+      contextURL = URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_CONTEXT).textValue()));
       tree.remove(Constants.JSON_CONTEXT);
     } else if (tree.hasNonNull(Constants.JSON_METADATA)) {
-      contextURL = URI.create(tree.get(Constants.JSON_METADATA).textValue());
+      contextURL = URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_METADATA).textValue()));
       tree.remove(Constants.JSON_METADATA);
     } else {
       contextURL = null;
     }
     if (contextURL != null) {
-      entitySet.setBaseURI(URI.create(StringUtils.substringBefore(contextURL.toASCIIString(), Constants.METADATA)));
+      entitySet.setBaseURI(URI.create(URIUtils.cleanHref(
+              StringUtils.substringBefore(contextURL.toASCIIString(), Constants.METADATA))));
     }
 
     final String metadataETag;
@@ -85,11 +87,11 @@ public class JsonEntitySetDeserializer extends JsonDeserializer {
       tree.remove(Constants.JSON_COUNT);
     }
     if (tree.hasNonNull(Constants.JSON_NEXT_LINK)) {
-      entitySet.setNext(URI.create(tree.get(Constants.JSON_NEXT_LINK).textValue()));
+      entitySet.setNext(URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_NEXT_LINK).textValue())));
       tree.remove(Constants.JSON_NEXT_LINK);
     }
     if (tree.hasNonNull(Constants.JSON_DELTA_LINK)) {
-      entitySet.setDeltaLink(URI.create(tree.get(Constants.JSON_DELTA_LINK).textValue()));
+      entitySet.setDeltaLink(URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_DELTA_LINK).textValue())));
       tree.remove(Constants.JSON_DELTA_LINK);
     }
 
@@ -121,7 +123,7 @@ public class JsonEntitySetDeserializer extends JsonDeserializer {
 
         final ObjectNode opNode = (ObjectNode) tree.get(field.getKey());
         operation.setTitle(opNode.get(Constants.ATTR_TITLE).asText());
-        operation.setTarget(URI.create(opNode.get(Constants.ATTR_TARGET).asText()));
+        operation.setTarget(URI.create(URIUtils.cleanHref(opNode.get(Constants.ATTR_TARGET).asText())));
         entitySet.getOperations().add(operation);
         toRemove.add(field.getKey());
       }

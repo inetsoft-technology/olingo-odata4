@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.ContextURL.Suffix;
@@ -61,7 +62,8 @@ public class ContextURLParser {
       contextURLasString = contextURLasString.replace("/$deletedLink", StringUtils.EMPTY);
     }
 
-    contextUrl.serviceRoot(URI.create(StringUtils.substringBefore(contextURLasString, Constants.METADATA)));
+    contextUrl.serviceRoot(URI.create(URIUtils.cleanHref(
+            StringUtils.substringBefore(contextURLasString, Constants.METADATA))));
 
     final String rest = StringUtils.substringAfter(contextURLasString, Constants.METADATA + "#");
 

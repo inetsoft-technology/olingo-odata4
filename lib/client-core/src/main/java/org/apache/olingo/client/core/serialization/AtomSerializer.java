@@ -35,6 +35,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.olingo.client.api.data.ResWrap;
 import org.apache.olingo.client.api.serialization.ODataSerializer;
 import org.apache.olingo.client.api.serialization.ODataSerializerException;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.AbstractODataObject;
 import org.apache.olingo.commons.api.data.Annotation;
@@ -251,7 +252,7 @@ public class AtomSerializer implements ODataSerializer {
             writer.writeStartElement(Constants.NS_ATOM, Constants.ATOM_ELEM_FEED);
             for (String binding:link.getBindingLinks()) {            
               Entity entity = new Entity();
-              entity.setId(URI.create(binding));
+              entity.setId(URI.create(URIUtils.cleanHref(binding)));
               inlineEntityRef(writer, entity);                      
             }
             writer.writeEndElement(); //feed            
@@ -295,7 +296,7 @@ public class AtomSerializer implements ODataSerializer {
             writer.writeStartElement(Constants.NS_ATOM, Constants.ATOM_ELEM_FEED);
             for (String binding:entitySetLink) {            
               Entity entity = new Entity();
-              entity.setId(URI.create(binding));
+              entity.setId(URI.create(URIUtils.cleanHref(binding)));
               inlineEntityRef(writer, entity);                      
             }
             writer.writeEndElement();    

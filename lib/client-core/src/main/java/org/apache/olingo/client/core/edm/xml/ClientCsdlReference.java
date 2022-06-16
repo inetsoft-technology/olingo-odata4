@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import org.apache.olingo.client.api.edm.xml.Include;
 import org.apache.olingo.client.api.edm.xml.IncludeAnnotations;
 import org.apache.olingo.client.api.edm.xml.Reference;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.edm.provider.CsdlAbstractEdmItem;
 import org.apache.olingo.commons.api.edm.provider.CsdlAnnotation;
 
@@ -80,7 +81,7 @@ class ClientCsdlReference extends CsdlAbstractEdmItem implements Serializable, R
         final JsonToken token = jp.getCurrentToken();
         if (token == JsonToken.FIELD_NAME) {
           if ("Uri".equals(jp.getCurrentName())) {
-            reference.setUri(URI.create(jp.nextTextValue()));
+            reference.setUri(URI.create(URIUtils.cleanHref(jp.nextTextValue())));
           } else if ("Include".equals(jp.getCurrentName())) {
             jp.nextToken();
             reference.getIncludes().add(jp.readValueAs( ClientCsdlInclude.class));

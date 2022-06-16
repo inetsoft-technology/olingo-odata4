@@ -80,6 +80,20 @@ public final class URIUtils {
   }
 
   /**
+   * URL encodes restricted characters in an Href string.
+   *
+   * @param href the string to clean.
+   *
+   * @return the cleaned string.
+   */
+  public static String cleanHref(final String href) {
+    return href
+            .replace(" ", "%20")
+            .replace("[", "%5B")
+            .replace("]", "%5D");
+  }
+
+  /**
    * Build URI starting from the given base and href.
    * <br/>
    * If href is absolute or base is null then base will be ignored.
@@ -93,10 +107,10 @@ public final class URIUtils {
       throw new IllegalArgumentException("Null link provided");
     }
 
-    URI uri = URI.create(href);
+    URI uri = URI.create(cleanHref(href));
 
     if (!uri.isAbsolute() && base != null) {
-      uri = URI.create(base + "/" + href);
+      uri = URI.create(cleanHref(base + "/" + href));
     }
 
     return uri.normalize();
@@ -132,10 +146,10 @@ public final class URIUtils {
       throw new IllegalArgumentException("Null link provided");
     }
 
-    URI uri = URI.create(href);
+    URI uri = URI.create(cleanHref(href));
 
     if (!uri.isAbsolute() && base != null) {
-      uri = URI.create(base.toASCIIString() + "/" + href);
+      uri = URI.create(cleanHref(base.toASCIIString() + "/" + href));
     }
 
     return uri.normalize();
@@ -373,9 +387,9 @@ public final class URIUtils {
       inlineParams.deleteCharAt(inlineParams.length() - 1);
     }
 
-    return URI.create(baseURI + "(" + Encoder.encode(inlineParams.toString()) + ")"
+    return URI.create(cleanHref(baseURI + "(" + Encoder.encode(inlineParams.toString()) + ")"
         + (pathSegments == null ? StringUtils.EMPTY : pathSegments)
         + (!uriOption.equals(StringUtils.EMPTY) ? "/" + Encoder.encode(uriOption.substring(1)) : StringUtils.EMPTY)
-        + (StringUtils.isNotBlank(rawQuery) ? "?" + rawQuery : StringUtils.EMPTY));
+        + (StringUtils.isNotBlank(rawQuery) ? "?" + rawQuery : StringUtils.EMPTY)));
   }
 }

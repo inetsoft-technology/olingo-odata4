@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.olingo.client.api.data.ServiceDocument;
 import org.apache.olingo.client.api.data.ServiceDocumentItem;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.Constants;
 
 public final class ServiceDocumentImpl implements ServiceDocument {
@@ -42,7 +43,7 @@ public final class ServiceDocumentImpl implements ServiceDocument {
     URI baseURI = null;
     if (metadata != null) {
       final String metadataURI = getMetadata();
-      baseURI = URI.create(metadataURI.substring(0, metadataURI.indexOf(Constants.METADATA)));
+      baseURI = URI.create(URIUtils.cleanHref(metadataURI.substring(0, metadataURI.indexOf(Constants.METADATA))));
     }
 
     return baseURI;

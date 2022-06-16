@@ -31,6 +31,7 @@ import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.data.ResWrap;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.Annotation;
 import org.apache.olingo.commons.api.data.Entity;
@@ -67,16 +68,17 @@ public class JsonEntityDeserializer extends JsonDeserializer {
 
     final URI contextURL;
     if (tree.hasNonNull(Constants.JSON_CONTEXT)) {
-      contextURL = URI.create(tree.get(Constants.JSON_CONTEXT).textValue());
+      contextURL = URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_CONTEXT).textValue()));
       tree.remove(Constants.JSON_CONTEXT);
     } else if (tree.hasNonNull(Constants.JSON_METADATA)) {
-      contextURL = URI.create(tree.get(Constants.JSON_METADATA).textValue());
+      contextURL = URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_METADATA).textValue()));
       tree.remove(Constants.JSON_METADATA);
     } else {
       contextURL = null;
     }
     if (contextURL != null) {
-      entity.setBaseURI(URI.create(StringUtils.substringBefore(contextURL.toASCIIString(), Constants.METADATA)));
+      entity.setBaseURI(URI.create(URIUtils.cleanHref(
+              StringUtils.substringBefore(contextURL.toASCIIString(), Constants.METADATA))));
     }
 
     final String metadataETag;
@@ -99,7 +101,7 @@ public class JsonEntityDeserializer extends JsonDeserializer {
     }
 
     if (tree.hasNonNull(Constants.JSON_ID)) {
-      entity.setId(URI.create(tree.get(Constants.JSON_ID).textValue()));
+      entity.setId(URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_ID).textValue())));
       tree.remove(Constants.JSON_ID);
     }
 
@@ -124,11 +126,13 @@ public class JsonEntityDeserializer extends JsonDeserializer {
     }
 
     if (tree.hasNonNull(Constants.JSON_MEDIA_READ_LINK)) {
-      entity.setMediaContentSource(URI.create(tree.get(Constants.JSON_MEDIA_READ_LINK).textValue()));
+      entity.setMediaContentSource(URI.create(URIUtils.cleanHref(
+              tree.get(Constants.JSON_MEDIA_READ_LINK).textValue())));
       tree.remove(Constants.JSON_MEDIA_READ_LINK);
     }
     if (tree.hasNonNull(Constants.JSON_MEDIA_EDIT_LINK)) {
-      entity.setMediaContentSource(URI.create(tree.get(Constants.JSON_MEDIA_EDIT_LINK).textValue()));
+      entity.setMediaContentSource(URI.create(URIUtils.cleanHref(
+              tree.get(Constants.JSON_MEDIA_EDIT_LINK).textValue())));
       tree.remove(Constants.JSON_MEDIA_EDIT_LINK);
     }
     if (tree.hasNonNull(Constants.JSON_MEDIA_CONTENT_TYPE)) {
@@ -190,7 +194,7 @@ public class JsonEntityDeserializer extends JsonDeserializer {
 
         final ObjectNode opNode = (ObjectNode) tree.get(field.getKey());
         operation.setTitle(opNode.get(Constants.ATTR_TITLE).asText());
-        operation.setTarget(URI.create(opNode.get(Constants.ATTR_TARGET).asText()));
+        operation.setTarget(URI.create(URIUtils.cleanHref(opNode.get(Constants.ATTR_TARGET).asText())));
 
         entity.getOperations().add(operation);
 

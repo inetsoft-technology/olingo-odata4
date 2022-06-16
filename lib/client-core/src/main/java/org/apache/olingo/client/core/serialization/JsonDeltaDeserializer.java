@@ -25,6 +25,7 @@ import java.net.URI;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.data.ResWrap;
 import org.apache.olingo.client.api.serialization.ODataDeserializerException;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.Constants;
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.DeletedEntity;
@@ -50,19 +51,20 @@ public class JsonDeltaDeserializer extends JsonDeserializer {
     final Delta delta = new Delta();
 
     final URI contextURL = tree.hasNonNull(Constants.JSON_CONTEXT) ?
-        URI.create(tree.get(Constants.JSON_CONTEXT).textValue()) : null;
+        URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_CONTEXT).textValue())) : null;
     if (contextURL != null) {
-      delta.setBaseURI(URI.create(StringUtils.substringBefore(contextURL.toASCIIString(), Constants.METADATA)));
+      delta.setBaseURI(URI.create(URIUtils.cleanHref(
+              StringUtils.substringBefore(contextURL.toASCIIString(), Constants.METADATA))));
     }
 
     if (tree.hasNonNull(Constants.JSON_COUNT)) {
       delta.setCount(tree.get(Constants.JSON_COUNT).asInt());
     }
     if (tree.hasNonNull(Constants.JSON_NEXT_LINK)) {
-      delta.setNext(URI.create(tree.get(Constants.JSON_NEXT_LINK).textValue()));
+      delta.setNext(URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_NEXT_LINK).textValue())));
     }
     if (tree.hasNonNull(Constants.JSON_DELTA_LINK)) {
-      delta.setDeltaLink(URI.create(tree.get(Constants.JSON_DELTA_LINK).textValue()));
+      delta.setDeltaLink(URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_DELTA_LINK).textValue())));
     }
 
     if (tree.hasNonNull(Constants.VALUE)) {
@@ -70,7 +72,7 @@ public class JsonDeltaDeserializer extends JsonDeserializer {
       for (JsonNode jsonNode : tree.get(Constants.VALUE)) {
         final ObjectNode item = (ObjectNode) jsonNode;
         final ContextURL itemContextURL = item.hasNonNull(Constants.JSON_CONTEXT) ?
-            ContextURLParser.parse(URI.create(item.get(Constants.JSON_CONTEXT).textValue())) : null;
+            ContextURLParser.parse(URI.create(URIUtils.cleanHref(item.get(Constants.JSON_CONTEXT).textValue()))) : null;
         item.remove(Constants.JSON_CONTEXT);
 
         if (itemContextURL == null || itemContextURL.isEntity()) {

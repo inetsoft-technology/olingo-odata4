@@ -28,6 +28,7 @@ import org.apache.olingo.client.api.data.ResWrap;
 import org.apache.olingo.client.api.data.ServiceDocument;
 import org.apache.olingo.client.api.serialization.ODataDeserializerException;
 import org.apache.olingo.client.core.serialization.JsonDeserializer;
+import org.apache.olingo.client.core.uri.URIUtils;
 import org.apache.olingo.commons.api.Constants;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -58,10 +59,10 @@ public class JSONServiceDocumentDeserializer extends JsonDeserializer {
 
     final URI contextURL;
     if (tree.hasNonNull(Constants.JSON_CONTEXT)) {
-      contextURL = URI.create(tree.get(Constants.JSON_CONTEXT).textValue());
+      contextURL = URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_CONTEXT).textValue()));
       tree.remove(Constants.JSON_CONTEXT);
     } else if (tree.hasNonNull(Constants.JSON_METADATA)) {
-      contextURL = URI.create(tree.get(Constants.JSON_METADATA).textValue());
+      contextURL = URI.create(URIUtils.cleanHref(tree.get(Constants.JSON_METADATA).textValue()));
       tree.remove(Constants.JSON_METADATA);
     } else {
       contextURL = null;

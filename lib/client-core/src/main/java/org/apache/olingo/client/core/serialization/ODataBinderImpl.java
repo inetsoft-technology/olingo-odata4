@@ -615,7 +615,7 @@ public class ODataBinderImpl implements ODataBinder {
       if (annotation.getTerm().equals(Constants.JSON_TYPE.substring(1))){
         inlineEntity.setType((String)annotation.asPrimitive());
       } else if (annotation.getTerm().equals(Constants.JSON_ID.substring(1))){
-        inlineEntity.setId(URI.create((String)annotation.asPrimitive()));
+        inlineEntity.setId(URI.create(URIUtils.cleanHref((String)annotation.asPrimitive())));
       } else if (annotation.getTerm().equals(Constants.JSON_ETAG.substring(1))){
         inlineEntity.setETag((String)annotation.asPrimitive());
       }

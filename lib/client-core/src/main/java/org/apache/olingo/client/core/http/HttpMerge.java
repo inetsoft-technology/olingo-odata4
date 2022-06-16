@@ -21,6 +21,7 @@ package org.apache.olingo.client.core.http;
 import java.net.URI;
 
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.olingo.client.core.uri.URIUtils;
 
 /**
  * Class identifying MERGE HTTP method.
@@ -55,7 +56,7 @@ public class HttpMerge extends HttpEntityEnclosingRequestBase {
    */
   public HttpMerge(final String uri) {
     super();
-    setURI(URI.create(uri));
+    setURI(URI.create(URIUtils.cleanHref(uri)));
   }
 
   /**

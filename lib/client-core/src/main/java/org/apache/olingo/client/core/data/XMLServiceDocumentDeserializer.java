@@ -91,7 +91,7 @@ public class XMLServiceDocumentDeserializer extends JsonDeserializer {
         if ("base".equals(jp.getCurrentName())) {
           base = jp.nextTextValue();
         } else if ("context".equals(jp.getCurrentName())) {
-          contextURL = URI.create(jp.nextTextValue());
+          contextURL = URI.create(URIUtils.cleanHref(jp.nextTextValue()));
         } else if ("metadata-etag".equals(jp.getCurrentName())) {
           metadataETag = jp.nextTextValue();
         } else if ("workspace".equals(jp.getCurrentName())) {

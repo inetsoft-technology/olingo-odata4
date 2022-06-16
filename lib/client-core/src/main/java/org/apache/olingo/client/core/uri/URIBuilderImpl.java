@@ -290,11 +290,6 @@ public class URIBuilderImpl implements URIBuilder {
 
       if (seg.getType() == SegmentType.ENTITY) {
         segmentsBuilder.append(seg.getType().getValue());
-      } else if (seg.getValue().startsWith("(") && seg.getValue().endsWith(")")) {
-        segmentsBuilder.append(seg.getValue()
-                .replace(" ", "%20")
-                .replace("[", "%5B")
-                .replace("]", "%5D"));
       } else {
         segmentsBuilder.append(seg.getValue());
       }
@@ -324,7 +319,7 @@ public class URIBuilderImpl implements URIBuilder {
         segmentsBuilder.append(queryStr);
       }
 
-      return URI.create(segmentsBuilder.toString());
+      return URI.create(URIUtils.cleanHref(segmentsBuilder.toString()));
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("Could not build valid URI", e);
     }
